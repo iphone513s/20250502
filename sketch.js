@@ -25,7 +25,8 @@ function draw() {
   // 更新 graphics 內容
   graphics.background(0); // 黑色背景
   let step = 20;
-  let d = 15;
+  let boxSize = 18;
+  let circleRadius = 5;
   graphics.noStroke();
   capture.loadPixels();
   for (let i = 0; i < graphics.width; i += step) {
@@ -37,8 +38,13 @@ function draw() {
       let r = capture.pixels[idx] || 0;
       let g = capture.pixels[idx + 1] || 0;
       let b = capture.pixels[idx + 2] || 0;
+      // 畫方框
       graphics.fill(r, g, b);
-      graphics.ellipse(i + step / 2, j + step / 2, d, d);
+      graphics.noStroke();
+      graphics.rect(i + (step - boxSize) / 2, j + (step - boxSize) / 2, boxSize, boxSize);
+      // 在方框中央畫黑色圓
+      graphics.fill(0);
+      graphics.ellipse(i + step / 2, j + step / 2, circleRadius * 2, circleRadius * 2);
     }
   }
   
