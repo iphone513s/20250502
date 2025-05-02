@@ -1,4 +1,5 @@
 let capture;
+let graphics;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -8,6 +9,10 @@ function setup() {
   capture = createCapture(VIDEO);
   capture.size(windowWidth * 0.8, windowHeight * 0.8);
   capture.hide(); // 隱藏原始攝影機畫面
+  
+  // 初始化 graphics
+  graphics = createGraphics(windowWidth * 0.8, windowHeight * 0.8);
+  graphics.background(255, 204, 204); // 設定 graphics 的背景顏色
 }
 
 function draw() {
@@ -17,12 +22,34 @@ function draw() {
   let x = (width - capture.width) / 2;
   let y = (height - capture.height) / 2;
   
+  // 更新 graphics 內容
+  graphics.background(0); // 黑色背景
+  let step = 20;
+  let d = 15;
+  graphics.noStroke();
+  capture.loadPixels();
+  for (let i = 0; i < graphics.width; i += step) {
+    for (let j = 0; j < graphics.height; j += step) {
+      // 計算對應到 capture 的像素位置
+      let cx = Math.floor(i * capture.width / graphics.width);
+      let cy = Math.floor(j * capture.height / graphics.height);
+      let idx = 4 * (cx + cy * capture.width);
+      let r = capture.pixels[idx] || 0;
+      let g = capture.pixels[idx + 1] || 0;
+      let b = capture.pixels[idx + 2] || 0;
+      graphics.fill(r, g, b);
+      graphics.ellipse(i + step / 2, j + step / 2, d, d);
+    }
+  }
+  
   // 翻轉畫布以左右顛倒影像
   push();
   translate(width, 0);
   scale(-1, 1);
   
-  // 繪製攝影機影像
+  // 先繪製 graphics
+  image(graphics, x, y, capture.width, capture.height);
+  // 再繪製攝影機影像
   image(capture, x, y, capture.width, capture.height);
   pop();
 }
@@ -30,4 +57,6 @@ function draw() {
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   capture.size(windowWidth * 0.8, windowHeight * 0.8);
+  graphics = createGraphics(windowWidth * 0.8, windowHeight * 0.8);
+  graphics.background(255, 204, 204); // 更新 graphics 的背景大小與顏色
 }
