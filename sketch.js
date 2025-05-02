@@ -50,7 +50,7 @@ function draw() {
   // 先繪製 graphics
   image(graphics, x, y, capture.width, capture.height);
   // 再繪製攝影機影像
-  image(capture, x, y, capture.width, capture.height);
+  //image(capture, x, y, capture.width, capture.height);
   pop();
 }
 
